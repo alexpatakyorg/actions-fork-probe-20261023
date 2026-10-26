@@ -1,0 +1,27 @@
+name: Actions fork probe
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  probe:
+    name: Confirm workflow execution
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Emit probe marker
+        env:
+          PROBE_REPOSITORY: ${{ github.repository }}
+          PROBE_REPOSITORY_ID: ${{ github.repository_id }}
+          PROBE_EVENT: ${{ github.event_name }}
+          PROBE_SHA: ${{ github.sha }}
+          PROBE_RUN_ID: ${{ github.run_id }}
+        run: |
+          printf '%s\n' 'ACTIONS_FORK_PROBE_EXECUTED'
+          printf 'repository=%s\nrepository_id=%s\nevent=%s\nsha=%s\nrun_id=%s\n' \
+            "$PROBE_REPOSITORY" "$PROBE_REPOSITORY_ID" "$PROBE_EVENT" "$PROBE_SHA" "$PROBE_RUN_ID"
